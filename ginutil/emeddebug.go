@@ -1,16 +1,18 @@
 package ginutil
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"
+	"net/url"
 )
 
 const homeTemplate = `
 <html>
 <head><title>{{.Title}}</title></head>
 <frameset cols="200,*" border="0">
-	<frame src="/menu?sn={{.SN}}", name="menu">
+	<frame src="/menu?{{.Param}}", name="menu">
 	<frame src="/menu", name="result" >
 </frameset>
 </html>
@@ -22,7 +24,7 @@ const menuTemplate = `
 				<h3>Menu</h3>
 				<ul>
 					{{range $k,$v := .Menu}} 
-					<li><a href="{{$v}}?sn={{$.SN}}" target="result">{{$k}}</a></li> 
+					<li><a href="{{$v}}" target="result">{{$k}}</a></li> 
 					{{end}} 
 				</ul>
 			</body>
@@ -32,22 +34,23 @@ const menuTemplate = `
 type EmbedRouter struct {
 	Menu      string
 	RoutePath string
+	Param     gin.H           // url parameters
 	Handle    gin.HandlerFunc // if nil implement in outer
 }
 
 type EmbedDebugWeb struct {
 	G        *Engine
 	Title    string
-	SN       string
+	Param    gin.H
 	HomePath []string
 	Routers  []EmbedRouter
 }
 
-func NewEmbedDebugWeb(g *Engine, sn, title string, homePath ...string) *EmbedDebugWeb {
+func NewEmbedDebugWeb(g *Engine, title string, defParam gin.H, homePath ...string) *EmbedDebugWeb {
 	w := &EmbedDebugWeb{
 		G:        g,
 		Title:    title,
-		SN:       sn,
+		Param:    defParam,
 		HomePath: []string{"/"},
 	}
 
@@ -56,16 +59,17 @@ func NewEmbedDebugWeb(g *Engine, sn, title string, homePath ...string) *EmbedDeb
 	return w
 }
 
-func (e *EmbedDebugWeb) AddRouter(menu, routePath string, h gin.HandlerFunc) {
+func (e *EmbedDebugWeb) AddRouter(menu, routePath string, param gin.H, h gin.HandlerFunc) {
 	e.Routers = append(e.Routers, EmbedRouter{
 		Menu:      menu,
 		RoutePath: routePath,
+		Param:     param,
 		Handle:    h,
 	})
 }
 
-func (e *EmbedDebugWeb) AddFileSystem(menu, routePath, dir string) {
-	e.AddRouter(menu, routePath, nil)
+func (e *EmbedDebugWeb) AddFileSystem(menu, routePath, dir string, param gin.H) {
+	e.AddRouter(menu, routePath, param, nil)
 	e.G.StaticFS(routePath, gin.Dir(dir, true))
 }
 
@@ -74,10 +78,15 @@ func (e *EmbedDebugWeb) Register() {
 	template.Must(tmpl.New("menu").Parse(menuTemplate))
 	e.G.SetHTMLTemplate(tmpl)
 
+	homeUrlParam := url.Values{}
+	for k, v := range e.Param {
+		homeUrlParam.Set(k, fmt.Sprint(v))
+	}
+
 	home := func(c *gin.Context) {
 		c.HTML(http.StatusOK, "home", map[string]interface{}{
 			"Title": e.Title,
-			"SN":    e.SN,
+			"Param": homeUrlParam.Encode(),
 		})
 	}
 
@@ -88,7 +97,16 @@ func (e *EmbedDebugWeb) Register() {
 	data := map[string]interface{}{}
 
 	for _, r := range e.Routers {
-		data[r.Menu] = r.RoutePath
+		routeUrlParam := url.Values{}
+
+		for k, v := range r.Param {
+			routeUrlParam.Set(k, fmt.Sprint(v))
+		}
+		for k, v := range e.Param {
+			routeUrlParam.Set(k, fmt.Sprint(v))
+		}
+
+		data[r.Menu] = r.RoutePath + "?" + routeUrlParam.Encode()
 		if r.Handle != nil {
 			e.G.GET(r.RoutePath, r.Handle)
 		}
@@ -97,7 +115,6 @@ func (e *EmbedDebugWeb) Register() {
 	e.G.GET("/menu", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "menu", gin.H{
 			"Menu": data,
-			"SN":   e.SN,
 		})
 	})
 }
