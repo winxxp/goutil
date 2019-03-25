@@ -1,5 +1,9 @@
 package chain
 
+func Name() string {
+	return "chain"
+}
+
 type Handle func() error
 
 func Run(h ...Handle) error {

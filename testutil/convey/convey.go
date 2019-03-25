@@ -7,6 +7,10 @@ import (
 	"os"
 )
 
+func Name() string {
+	return "conveyutil"
+}
+
 func ShouldSliceAlmostEqual(actual interface{}, expected ...interface{}) string {
 	var left, right []float32
 	var ok bool

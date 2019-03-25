@@ -7,6 +7,10 @@ import (
 	"net/http"
 )
 
+func Name() string {
+	return "ginutil"
+}
+
 type Engine struct {
 	*gin.Engine
 }

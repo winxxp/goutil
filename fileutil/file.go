@@ -7,6 +7,17 @@ import (
 	"os"
 )
 
+func Name() string {
+	return "fileutil"
+}
+
+import (
+	"bytes"
+	"crypto/md5"
+	"io"
+	"os"
+)
+
 func FileMD5(filename string) ([]byte, error) {
 	f, err := os.Open(filename)
 	if err != nil {

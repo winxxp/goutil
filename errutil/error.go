@@ -1,5 +1,9 @@
 package errutil
 
+func Name() string {
+	return "errutil"
+}
+
 //ErrResult return err state
 // defStr[0], defStr[1] = fail, succeed comment
 func ErrResult(err error, defStr ...string) string {

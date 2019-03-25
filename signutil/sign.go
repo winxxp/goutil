@@ -11,6 +11,10 @@ var (
 	TimeLayout = "20060102150405.000Z07:00"
 )
 
+func Name() string {
+	return "signutil"
+}
+
 //
 // md5(signKey+spaceId+d)
 // signKey:签名密钥,由data中心发放，默认密钥：std-jim-cfs

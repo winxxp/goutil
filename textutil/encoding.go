@@ -10,6 +10,10 @@ import (
 	"os"
 )
 
+func Name() string {
+	return "textutil"
+}
+
 func UTF82ANSIDecode(s []byte) ([]byte, error) {
 	input := bytes.NewReader(s)
 	output := transform.NewReader(input, simplifiedchinese.GB18030.NewEncoder())

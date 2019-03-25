@@ -2,6 +2,10 @@ package byteutil
 
 import "strconv"
 
+func Name() string {
+	return "byteutil"
+}
+
 func Uint64ToByte(i uint64) []byte {
 	return []byte(strconv.FormatUint(i, 10))
 }
