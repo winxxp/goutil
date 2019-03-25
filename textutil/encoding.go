@@ -2,12 +2,9 @@ package textutil
 
 import (
 	"bytes"
-	"fmt"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
-	"io"
 	"io/ioutil"
-	"os"
 )
 
 func Name() string {
