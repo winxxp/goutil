@@ -175,3 +175,19 @@ func (c *Context) Page(o, cnt int) (offset, count uint64) {
 	count = c.Uint64("count", c.DefaultQueryGetter(strconv.Itoa(cnt)))
 	return
 }
+
+func (c *Context) ContextString(key string) string {
+	return c.MustGet(key).(string)
+}
+
+func (c *Context) ContextUint64(key string) uint64 {
+	return c.MustGet(key).(uint64)
+}
+
+func (c *Context) ContextInt64(key string) int64 {
+	return c.MustGet(key).(int64)
+}
+
+func (c *Context) ContextInt(key string) int {
+	return c.MustGet(key).(int)
+}
