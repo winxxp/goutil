@@ -7,14 +7,20 @@ func Run(h ...Handle) error {
 }
 
 type HandleChain struct {
-	err     error
-	handles []Handle
+	err        error
+	handles    []Handle
+	lastHandle func(error)
 }
 
 func New() *HandleChain {
 	return &HandleChain{
 		handles: make([]Handle, 0, 3),
 	}
+}
+
+func (r *HandleChain) Last(h func(error)) *HandleChain {
+	r.lastHandle = h
+	return r
 }
 
 func (r *HandleChain) Handles(h ...Handle) *HandleChain {
@@ -27,6 +33,10 @@ func (c *HandleChain) Run() error {
 		if c.err == nil {
 			c.err = h()
 		}
+	}
+
+	if c.lastHandle != nil {
+		c.lastHandle(c.err)
 	}
 
 	return c.err
