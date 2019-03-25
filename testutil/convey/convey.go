@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/winxxp/goutil/fileutil"
 	"math"
+	"os"
 )
 
 func ShouldSliceAlmostEqual(actual interface{}, expected ...interface{}) string {
@@ -48,4 +49,32 @@ func ShouldFileEqual(actual interface{}, expected ...interface{}) string {
 	}
 
 	return ""
+}
+
+func ShouldFileExist(actual interface{}, expected ...interface{}) string {
+	if filename, ok := actual.(string); !ok {
+		return "actual not filename string"
+	} else {
+		_, err := os.Stat(filename)
+		if err != nil {
+			return err.Error()
+		}
+
+		return ""
+	}
+}
+
+func ShouldFileNotExist(actual interface{}, expected ...interface{}) string {
+	if filename, ok := actual.(string); !ok {
+		return "actual not filename string"
+	} else {
+		_, err := os.Stat(filename)
+		if err == nil {
+			return fmt.Sprintf("{%s} exist", filename)
+		}
+		if os.IsNotExist(err) {
+			return ""
+		}
+		return err.Error()
+	}
 }
