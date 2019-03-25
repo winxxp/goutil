@@ -3,6 +3,7 @@ package fileutil
 import (
 	"bytes"
 	"crypto/md5"
+	"fmt"
 	"io"
 	"os"
 )
@@ -38,4 +39,31 @@ func Equal(f1, f2 string) bool {
 	}
 
 	return bytes.Equal(m1, m2)
+}
+
+//CopyFile Copy regular file
+func CopyFile(src, dst string) (int64, error) {
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		return 0, err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return 0, fmt.Errorf("%s is not a regular file", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return 0, err
+	}
+	defer source.Close()
+
+	destination, err := os.Create(dst)
+	if err != nil {
+		return 0, err
+	}
+	defer destination.Close()
+
+	nBytes, err := io.Copy(destination, source)
+	return nBytes, err
 }
