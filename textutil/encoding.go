@@ -20,6 +20,22 @@ func ANSI2UTF8Decode(s []byte) ([]byte, error) {
 	return d, nil
 }
 
+func UTF82ANSIDecode(s []byte) ([]byte, error) {
+	input := bytes.NewReader(s)
+	output := transform.NewReader(input, simplifiedchinese.GB18030.NewEncoder())
+	return ioutil.ReadAll(output)
+}
+
+func ANSI2UTF8Decode(s []byte) ([]byte, error) {
+	input := bytes.NewReader(s)
+	output := transform.NewReader(input, simplifiedchinese.GB18030.NewDecoder())
+	d, e := ioutil.ReadAll(output)
+	if e != nil {
+		return nil, e
+	}
+	return d, nil
+}
+
 //CopyFile Copy regular file
 func CopyFile(src, dst string) (int64, error) {
 	sourceFileStat, err := os.Stat(src)
@@ -46,4 +62,3 @@ func CopyFile(src, dst string) (int64, error) {
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
 }
-
