@@ -86,7 +86,7 @@ func Copy2UniqueFile(src, dir, filename string) (int64, string, error) {
 	}
 	defer source.Close()
 
-	destination, err := ioutil.TempFile(dir, "*@"+filename)
+	destination, err := ioutil.TempFile(dir, "*$"+filename)
 	if err != nil {
 		return 0, "", err
 	}

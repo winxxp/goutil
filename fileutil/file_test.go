@@ -38,6 +38,20 @@ func TestEqual(t *testing.T) {
 			})
 		})
 
+		Convey("CopyFile", func() {
+			dir, err := ioutil.TempDir("", "")
+			So(err, ShouldBeNil)
+
+			src := filepath.Join(dir, "src")
+			dst := filepath.Join(dir, "dst")
+
+			err = ioutil.WriteFile(src, []byte("hello"), os.ModePerm)
+			So(err, ShouldBeNil)
+
+			_, err = CopyFile(src, dst)
+			So(err, ShouldBeNil)
+		})
+
 		Convey("Copy2UniqueFile", func() {
 			dir, err := ioutil.TempDir("", "")
 			So(err, ShouldBeNil)
