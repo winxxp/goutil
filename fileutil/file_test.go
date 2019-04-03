@@ -4,11 +4,12 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
 func TestEqual(t *testing.T) {
-	Convey("File", t, func() {
+	Convey("File", t, func(c C) {
 		var (
 			err      error
 			filename string
@@ -35,6 +36,19 @@ func TestEqual(t *testing.T) {
 					So(Equal(filename, filename+"0"), ShouldBeFalse)
 				})
 			})
+		})
+
+		Convey("Copy2UniqueFile", func() {
+			dir, err := ioutil.TempDir("", "")
+			So(err, ShouldBeNil)
+
+			src := filepath.Join(dir, "src")
+			err = ioutil.WriteFile(src, []byte("hello"), os.ModePerm)
+			So(err, ShouldBeNil)
+
+			_, filename, err := Copy2UniqueFile(src, dir, "test")
+			So(err, ShouldBeNil)
+			Println("fileName: ", filename)
 		})
 	})
 }

@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 )
 
@@ -66,4 +67,31 @@ func CopyFile(src, dst string) (int64, error) {
 
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
+}
+
+//Copy2UniqueFil copy file to create unique file
+func Copy2UniqueFile(src, dir, filename string) (int64, string, error) {
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		return 0, "", err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return 0, "", fmt.Errorf("%s is not a regular file", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return 0, "", err
+	}
+	defer source.Close()
+
+	destination, err := ioutil.TempFile(dir, "*@"+filename)
+	if err != nil {
+		return 0, "", err
+	}
+	defer destination.Close()
+
+	nBytes, err := io.Copy(destination, source)
+	return nBytes, destination.Name(), err
 }
