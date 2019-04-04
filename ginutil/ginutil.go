@@ -158,12 +158,20 @@ func (c *Context) TimeFromParam(key string, layout string) (t time.Time) {
 	return c.Time(key, layout, c.ParamGetter())
 }
 
-func (c *Context) TimeFromPost(key string, layout string) (t time.Time) {
-	return c.Time(key, layout, c.PostGetter())
+func (c *Context) TimeFromPost(key string, layout string, defaultValue ...time.Time) (t time.Time) {
+	getter := c.PostGetter()
+	if len(defaultValue) > 0 {
+		getter = c.DefaultPostGetter(defaultValue[0].Format(layout))
+	}
+	return c.Time(key, layout, getter)
 }
 
-func (c *Context) TimeFromQuery(key string, layout string) (t time.Time) {
-	return c.Time(key, layout, c.QueryGetter())
+func (c *Context) TimeFromQuery(key string, layout string, defaultValue ...time.Time) (t time.Time) {
+	getter := c.QueryGetter()
+	if len(defaultValue) > 0 {
+		getter = c.DefaultQueryGetter(defaultValue[0].Format(layout))
+	}
+	return c.Time(key, layout, getter)
 }
 
 func (c *Context) QueryGetter() GetHandle {
