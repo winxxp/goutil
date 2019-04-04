@@ -64,6 +64,14 @@ func (c *Context) Uint64FromParam(key string) uint64 {
 	return c.Uint64(key, c.ParamGetter())
 }
 
+func (c *Context) Uint64FromPost(key string, defaultValue ...uint64) uint64 {
+	getter := c.PostGetter()
+	if len(defaultValue) > 0 {
+		getter = c.DefaultPostGetter(strconv.FormatUint(defaultValue[0], 10))
+	}
+	return c.Uint64(key, getter)
+}
+
 func (c *Context) Uint64FromQuery(key string, defaultValue ...uint64) uint64 {
 	getter := c.QueryGetter()
 	if len(defaultValue) > 0 {
@@ -84,6 +92,14 @@ func (c *Context) Int64(key string, getter Getter) (i int64) {
 
 func (c *Context) Int64FromParam(key string) int64 {
 	return c.Int64(key, c.ParamGetter())
+}
+
+func (c *Context) Int64FromPost(key string, defaultValue ...int64) int64 {
+	getter := c.PostGetter()
+	if len(defaultValue) > 0 {
+		getter = c.DefaultPostGetter(strconv.FormatInt(defaultValue[0], 10))
+	}
+	return c.Int64(key, getter)
 }
 
 func (c *Context) Int64FromQuery(key string, defaultValue ...int64) int64 {
@@ -111,6 +127,14 @@ func (c *Context) StrFromParam(key string) string {
 	return c.Str(key, c.ParamGetter())
 }
 
+func (c *Context) StrFromPost(key string, defaultValue ...string) string {
+	getter := c.PostGetter()
+	if len(defaultValue) > 0 {
+		getter = c.DefaultPostGetter(defaultValue[0])
+	}
+	return c.Str(key, getter)
+}
+
 //StrFromQuery 从Path query中取值，值不能为空
 func (c *Context) StrFromQuery(key string, defaultValue ...string) string {
 	getter := c.QueryGetter()
@@ -134,6 +158,10 @@ func (c *Context) TimeFromParam(key string, layout string) (t time.Time) {
 	return c.Time(key, layout, c.ParamGetter())
 }
 
+func (c *Context) TimeFromPost(key string, layout string) (t time.Time) {
+	return c.Time(key, layout, c.PostGetter())
+}
+
 func (c *Context) TimeFromQuery(key string, layout string) (t time.Time) {
 	return c.Time(key, layout, c.QueryGetter())
 }
@@ -153,6 +181,21 @@ func (c *Context) DefaultQueryGetter(def string) GetHandle {
 func (c *Context) ParamGetter() GetHandle {
 	return func(key string) string {
 		return c.Context.Param(key)
+	}
+}
+
+func (c *Context) PostGetter() GetHandle {
+	return func(key string) string {
+		return c.Context.PostForm(key)
+	}
+}
+
+func (c *Context) DefaultPostGetter(def string) GetHandle {
+	return func(key string) string {
+		if v, exist := c.Context.GetPostForm(key); exist {
+			return v
+		}
+		return def
 	}
 }
 
