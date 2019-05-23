@@ -9,6 +9,7 @@ import (
 	"github.com/winxxp/goutil/idutil"
 	"github.com/winxxp/goutil/signutil"
 	"github.com/winxxp/goutil/testutil/convey"
+	"github.com/winxxp/goutil/testutil/matcher"
 	"github.com/winxxp/goutil/textutil"
 )
 
@@ -23,5 +24,6 @@ func Utils() []string {
 		signutil.Name(),
 		convey.Name(),
 		textutil.Name(),
+		matcher.Name(),
 	}
 }

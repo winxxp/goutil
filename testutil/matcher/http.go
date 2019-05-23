@@ -9,6 +9,10 @@ import (
 	"reflect"
 )
 
+func Name() string {
+	return "matcher"
+}
+
 func ShouldHttpOK(actual interface{}, expected ...interface{}) string {
 	code, ok := actual.(int)
 	if !ok {
