@@ -1,6 +1,7 @@
 package ginutil
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/juju/errors"
 	"strconv"
@@ -109,6 +110,38 @@ func (c *Context) Int64FromQuery(key string, defaultValue ...int64) int64 {
 	}
 
 	return c.Int64(key, getter)
+}
+
+func (c *Context) Float64(key string, getter Getter) (f float64) {
+	if c.err != nil {
+		return
+	}
+
+	var f64 float64
+	f64, c.err = strconv.ParseFloat(getter.Get(key), 64)
+	f = float64(f64)
+	return
+}
+
+func (c *Context) Float64FromParam(key string) float64 {
+	return c.Float64(key, c.ParamGetter())
+}
+
+func (c *Context) Float64FromPost(key string, defaultValue ...float64) float64 {
+	getter := c.PostGetter()
+	if len(defaultValue) > 0 {
+		getter = c.DefaultPostGetter(fmt.Sprintf("%f", defaultValue[0]))
+	}
+	return c.Float64(key, getter)
+}
+
+func (c *Context) Float64FromQuery(key string, defaultValue ...float64) float64 {
+	getter := c.ParamGetter()
+	if len(defaultValue) > 0 {
+		getter = c.DefaultQueryGetter(fmt.Sprintf("%f", defaultValue[0]))
+	}
+
+	return c.Float64(key, getter)
 }
 
 func (c *Context) Str(key string, getter Getter) (str string) {
