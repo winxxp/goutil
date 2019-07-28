@@ -5,7 +5,6 @@ import (
 	"github.com/bwmarrin/snowflake"
 	"github.com/gin-gonic/gin"
 	"github.com/winxxp/glog"
-	"net/http"
 	"strconv"
 	"time"
 )
@@ -66,12 +65,13 @@ func Logger(notlogged ...string) gin.HandlerFunc {
 			})
 
 			var logPad func(s string, rs string, pad byte)
-			switch {
-			case statusCode >= http.StatusOK && statusCode < http.StatusMultipleChoices:
+
+			switch statusCode / 100 {
+			case 1, 2:
 				logPad = entry.PadInfo
-			case statusCode >= http.StatusMultipleChoices && statusCode < http.StatusBadRequest:
+			case 3:
 				logPad = entry.PadWarning
-			case statusCode >= http.StatusBadRequest && statusCode < http.StatusInternalServerError:
+			case 4, 5:
 				logPad = entry.PadError
 			default:
 				logPad = entry.PadError
