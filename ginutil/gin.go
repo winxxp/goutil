@@ -2,8 +2,8 @@ package ginutil
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/winxxp/glog"
 	"net/http"
 )
 
@@ -13,14 +13,16 @@ func Name() string {
 
 type Engine struct {
 	*gin.Engine
+	logger ILogger
 }
 
-func NewGin() *Engine {
+func NewGin(logger ILogger) *Engine {
 	engine := &Engine{
 		Engine: gin.New(),
+		logger: logger,
 	}
 
-	engine.Use(Logger(), Recovery())
+	engine.Use(Logger(logger), Recovery(logger))
 
 	return engine
 }
@@ -34,8 +36,13 @@ func (e *Engine) Run(ctx context.Context, addr string) error {
 	go func() {
 		<-ctx.Done()
 		err := server.Close()
-		glog.WithResult(err).Error("server close")
+		e.logger.Error(fmt.Sprintf("server close: %v", err))
 	}()
 
 	return server.ListenAndServe()
+}
+
+type ILogger interface {
+	Info(i string)
+	Error(e string)
 }

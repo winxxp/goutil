@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/winxxp/glog"
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
@@ -12,15 +11,17 @@ import (
 	"time"
 )
 
-func Recovery() gin.HandlerFunc {
+func Recovery(logger ILogger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		rid := c.GetString("rid")
 		defer func() {
 			if err := recover(); err != nil {
 				stack := stack(3)
 				httprequest, _ := httputil.DumpRequest(c.Request, false)
-				glog.WithIDString(rid).Errorf("[Recovery] %s panic recovered:\n%s\n%s\n%s",
-					timeFormat(time.Now()), string(httprequest), err, stack)
+				if logger != nil {
+					logger.Error(fmt.Sprintf("{%v}[Recovery] %s panic recovered:\n%s\n%s\n%s\n",
+						rid, timeFormat(time.Now()), string(httprequest), err, stack))
+				}
 				c.AbortWithStatus(http.StatusInternalServerError)
 			}
 		}()

@@ -2,19 +2,22 @@ package main
 
 import (
 	"context"
+	"flag"
 	"github.com/gin-gonic/gin"
-	"github.com/winxxp/glog"
 	"github.com/winxxp/goutil/ginutil"
+	log "log"
 	"net/http"
 )
 
 func main() {
+	flag.Parse()
+
 	ctx, _ := context.WithCancel(context.Background())
 
-	g := ginutil.NewGin()
+	g := ginutil.NewGin(&Log{})
 
 	emb := ginutil.NewEmbedDebugWeb(g, "Gin Example", gin.H{"sn": 1234}, "/home")
-	emb.AddRouter("Config", "/config", gin.H{"p1": 1, "p2":2}, func(c *gin.Context) {
+	emb.AddRouter("Config", "/config", gin.H{"p1": 1, "p2": 2}, func(c *gin.Context) {
 		param := gin.H{}
 		for k, v := range c.Request.URL.Query() {
 			param[k] = v
@@ -26,7 +29,18 @@ func main() {
 	})
 	emb.Register()
 
-	glog.WithField("addr:", ":8080").Info("server run")
-	err := g.Run(ctx, ":8080")
-	glog.WithResult(err).Log("server quit")
+	log.Println("addr:", ":8080", "server run")
+	err := g.Run(ctx, ":18080")
+	log.Println(err, "server quit")
+}
+
+type Log struct {
+}
+
+func (Log) Info(i string) {
+	log.Println(i)
+}
+
+func (Log) Error(e string) {
+	log.Println(e)
 }
