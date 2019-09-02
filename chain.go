@@ -1,8 +1,4 @@
-package chain
-
-func Name() string {
-	return "chain"
-}
+package goutil
 
 type Handle func() error
 

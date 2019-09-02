@@ -1,4 +1,4 @@
-package hexbyte
+package goutil
 
 import (
 	. "github.com/smartystreets/goconvey/convey"

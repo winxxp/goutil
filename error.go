@@ -1,8 +1,4 @@
-package errutil
-
-func Name() string {
-	return "errutil"
-}
+package goutil
 
 //ErrResult return err state
 // defStr[0], defStr[1] = fail, succeed comment

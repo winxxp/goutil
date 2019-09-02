@@ -1,4 +1,4 @@
-package textutil
+package goutil
 
 import (
 	"bytes"
@@ -6,10 +6,6 @@ import (
 	"golang.org/x/text/transform"
 	"io/ioutil"
 )
-
-func Name() string {
-	return "textutil"
-}
 
 func UTF82ANSIDecode(s []byte) ([]byte, error) {
 	input := bytes.NewReader(s)

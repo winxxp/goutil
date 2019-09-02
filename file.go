@@ -1,4 +1,4 @@
-package fileutil
+package goutil
 
 import (
 	"bytes"
@@ -8,10 +8,6 @@ import (
 	"io/ioutil"
 	"os"
 )
-
-func Name() string {
-	return "fileutil"
-}
 
 func FileMD5(filename string) ([]byte, error) {
 	f, err := os.Open(filename)
@@ -29,7 +25,7 @@ func FileMD5(filename string) ([]byte, error) {
 	return d.Sum(nil), nil
 }
 
-func Equal(f1, f2 string) bool {
+func FileEqual(f1, f2 string) bool {
 	m1, err := FileMD5(f1)
 	if err != nil {
 		return false

@@ -4,8 +4,8 @@ import (
 	"context"
 	"flag"
 	"github.com/gin-gonic/gin"
-	"github.com/winxxp/goutil/ginutil"
-	log "log"
+	"github.com/winxxp/goutil"
+	"log"
 	"net/http"
 )
 
@@ -14,9 +14,9 @@ func main() {
 
 	ctx, _ := context.WithCancel(context.Background())
 
-	g := ginutil.NewGin(&Log{})
+	g := goutil.NewGin(&Log{})
 
-	emb := ginutil.NewEmbedDebugWeb(g, "Gin Example", gin.H{"sn": 1234}, "/home")
+	emb := goutil.NewEmbedDebugWeb(g, "Gin Example", gin.H{"sn": 1234}, "/home")
 	emb.AddRouter("Config", "/config", gin.H{"p1": 1, "p2": 2}, func(c *gin.Context) {
 		param := gin.H{}
 		for k, v := range c.Request.URL.Query() {

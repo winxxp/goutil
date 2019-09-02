@@ -1,4 +1,4 @@
-package signutil
+package goutil
 
 import (
 	"crypto/md5"
@@ -10,10 +10,6 @@ import (
 var (
 	TimeLayout = "20060102150405.000Z07:00"
 )
-
-func Name() string {
-	return "signutil"
-}
 
 //
 // md5(signKey+spaceId+d)

@@ -1,4 +1,4 @@
-package ginutil
+package goutil
 
 import (
 	"context"
@@ -6,10 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
-
-func Name() string {
-	return "ginutil"
-}
 
 type Engine struct {
 	*gin.Engine

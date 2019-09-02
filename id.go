@@ -1,13 +1,9 @@
-package idutil
+package goutil
 
 import (
 	"encoding/binary"
 	"strconv"
 )
-
-func Name() string {
-	return "idutil"
-}
 
 type ID interface {
 	String() string

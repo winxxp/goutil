@@ -1,4 +1,4 @@
-package signutil
+package goutil
 
 import (
 	. "github.com/smartystreets/goconvey/convey"

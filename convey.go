@@ -1,15 +1,10 @@
-package convey
+package goutil
 
 import (
 	"fmt"
-	"github.com/winxxp/goutil/fileutil"
 	"math"
 	"os"
 )
-
-func Name() string {
-	return "conveyutil"
-}
 
 func ShouldSliceAlmostEqual(actual interface{}, expected ...interface{}) string {
 	var left, right []float32
@@ -48,7 +43,7 @@ func ShouldFileEqual(actual interface{}, expected ...interface{}) string {
 		return "expected not filename"
 	}
 
-	if !fileutil.Equal(f1, f2) {
+	if !FileEqual(f1, f2) {
 		return fmt.Sprintf("%s != %s", f1, f2)
 	}
 

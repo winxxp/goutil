@@ -1,4 +1,4 @@
-package fileutil
+package goutil
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
@@ -28,12 +28,12 @@ func TestEqual(t *testing.T) {
 			_, err = f.WriteString("12345678")
 			So(err, ShouldBeNil)
 
-			Convey("Equal", func() {
+			Convey("FileEqual", func() {
 				Convey("No error", func() {
-					So(Equal(filename, filename), ShouldBeTrue)
+					So(FileEqual(filename, filename), ShouldBeTrue)
 				})
 				Convey("Error", func() {
-					So(Equal(filename, filename+"0"), ShouldBeFalse)
+					So(FileEqual(filename, filename+"0"), ShouldBeFalse)
 				})
 			})
 		})

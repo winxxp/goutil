@@ -1,4 +1,4 @@
-package textutil
+package goutil
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
@@ -10,7 +10,7 @@ import (
 
 func TestCopyFile(t *testing.T) {
 	Convey("Copy File", t, func() {
-		src := "util_test.go"
+		src := "encoding_test.go"
 		dst := filepath.Join(os.TempDir(), src)
 
 		os.Remove(dst)
